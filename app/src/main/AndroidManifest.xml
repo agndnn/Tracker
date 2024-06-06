@@ -41,15 +41,17 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".CallInterceptorService"
-            android:enabled="true"
-           />
+
+        <receiver android:name=".CallReceiver"
+            android:exported="true">
+        <intent-filter android:priority="-1">>
+        <action android:name="android.intent.action.PHONE_STATE"/>
+        </intent-filter>
+        </receiver>
 
     </application>
 

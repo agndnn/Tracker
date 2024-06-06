@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
         startLocationUpdates();
 
-        Intent serviceIntent = new Intent(this, CallInterceptorService.class);
+        Intent serviceIntent = new Intent(this, CallReceiver.class);
         startService(serviceIntent);
 
         /*
