@@ -30,24 +30,21 @@ public class MainActivity extends AppCompatActivity {
 
     private Button button;
     private Button buttonSave;
+    private Coord coord;
     private TextView textView;
-    private FusedLocationProviderClient fusedLocationClient;
     //private MapView mapView;
-    protected static final String par_latitude = "latitude";
-    protected static final String par_longitude = "longitude";
-    private static final int REQUEST_LOCATION_PERMISSION = 1;
+   // protected static final String par_latitude = "latitude";
+    //protected static final String par_longitude = "longitude";
+    //private static final int REQUEST_LOCATION_PERMISSION = 1;
 
 //    private double latitude;
 //    private double longitude;
-    LocationRequest locationRequest;
-    LocationCallback locationCallback;
     String[] permissions = {
                            Manifest.permission.ACCESS_FINE_LOCATION,
                            Manifest.permission.READ_PHONE_STATE,
                           Manifest.permission.CALL_PHONE,
                            Manifest.permission.RECEIVE_BOOT_COMPLETED
-    }
-            ;
+    };
     int requestCode = 123; // Любое число, которое вы выберете для
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,30 +57,9 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(permissions, 123);
         }
 
-        /*
-        //fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-        //   getCurrentLocation();
+         coord =new Coord(this);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ) {
-            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, 2);
-            requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 3);
-        }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_BOOT_COMPLETED) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.RECEIVE_BOOT_COMPLETED}, 4);
-        }
-
- */
-
-        //       MapKitFactory.setApiKey("a4304081-4a62-4707-9204-65de6edc6562");
- //       MapKitFactory.initialize(this);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        locationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(5000) // Интервал обновления местоположения в миллисекундах
-                .setFastestInterval(2000); // Самый быстрый интервал обновления в миллисекундах
-
        // mapView = findViewById(R.id.mapView);
         button = findViewById(R.id.button1);
         textView = findViewById(R.id.textView);
@@ -108,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         //String jsonBody = "{\"code\":\"ag234678\",\"is_log\":\"1\",\"lat\":\""
                        //         +latitude+"\",\"lon\":\""+longitude+"\"}";
-                        String urlString = "https://site-www.ru/maptrack/add_point.php?code=ag234678&is_log=1&lat="+ Params.latitude +"&lon="+Params.latitude;
+                        String urlString = "https://site-www.ru/maptrack/add_point.php?code=ag234678&is_log=1&lat="+ Params.latitude +"&lon="+Params.longitude;
                        // textView.setText(urlString);
                         String response = HttpClient.sendGetRequest(urlString);
                         runOnUiThread(() -> {
@@ -122,39 +98,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-// Создание слушателя для обработки обновлений местоположения
-           locationCallback = new LocationCallback() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                 // if (locationResult == null) {
-                   // return;
-                //}
-
-                for (Location location : locationResult.getLocations()) {
-                    // Обрабатываем полученное местоположение
-                    if (location!=null) {
-                        Params.latitude=location.getLatitude();
-                        Params.longitude=location.getLongitude();
-
-                       textView.setText("Широта: " + Params.latitude + " Долгота: " +Params.longitude);
-                    }
-                }
-            }
-        };
-
-
-        startLocationUpdates();
-
         Intent serviceIntent = new Intent(this, CallReceiver.class);
         startService(serviceIntent);
 
-        /*
-//        serviceIntent.putExtra(par_latitude, latitude); // Здесь передавайте значение первого параметра
- //       serviceIntent.putExtra(par_longitude, longitude); // Здесь передавайте значение второго параметра
-        startService(serviceIntent);
 
-*/
     //    startForegroundService(serviceIntent);
     }
 /*
@@ -208,14 +155,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //if (requestingLocationUpdates) {
-            startLocationUpdates();
+            coord.startLocationUpdates();
         //}
     }
 
-    @SuppressLint("MissingPermission")
-    private void startLocationUpdates() {
-        fusedLocationClient.requestLocationUpdates(locationRequest,
-                locationCallback,
-                Looper.getMainLooper());
-    }
 }

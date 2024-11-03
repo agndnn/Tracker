@@ -50,6 +50,8 @@
             android:exported="true">
         <intent-filter android:priority="-1">>
         <action android:name="android.intent.action.PHONE_STATE"/>
+            <action android:name="android.permission.ACCESS_FINE_LOCATION"/>
+            <action android:name="android.permission.ACCESS_COARSE_LOCATION"/>
         </intent-filter>
         </receiver>
 
