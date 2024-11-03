@@ -6,4 +6,7 @@ public class Log {
     public static void debug(String s){
         android.util.Log.d(LOG_CODE,s);
     }
+    public static void error(String s){
+        android.util.Log.e(LOG_CODE,s);
+    }
 }

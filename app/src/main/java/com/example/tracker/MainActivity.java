@@ -3,6 +3,8 @@ package com.example.tracker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+//import androidx.work.OneTimeWorkRequest;
+//import androidx.work.WorkManager;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -42,8 +44,10 @@ public class MainActivity extends AppCompatActivity {
     String[] permissions = {
                            Manifest.permission.ACCESS_FINE_LOCATION,
                            Manifest.permission.READ_PHONE_STATE,
-                          Manifest.permission.CALL_PHONE,
-                           Manifest.permission.RECEIVE_BOOT_COMPLETED
+                           Manifest.permission.CALL_PHONE,
+                           Manifest.permission.RECEIVE_BOOT_COMPLETED,
+                           Manifest.permission.READ_PHONE_NUMBERS,
+                           Manifest.permission.READ_CALL_LOG
     };
     int requestCode = 123; // Любое число, которое вы выберете для
     @Override
@@ -53,7 +57,10 @@ public class MainActivity extends AppCompatActivity {
         MapKitFactory.initialize(this);
 // Запуск обновлений местоположения
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
+        ) {
             requestPermissions(permissions, 123);
         }
 
@@ -91,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                             textView.setText("response="+response );
                             // Обновите UI с полученными данными
                         });
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

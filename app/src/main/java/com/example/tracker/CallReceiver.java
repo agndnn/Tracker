@@ -9,6 +9,9 @@ import android.os.Handler;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
 public class CallReceiver extends BroadcastReceiver {
     private static boolean incomingCall = false;
     private static final Notification CHANNEL_ID = null;
@@ -31,9 +34,9 @@ public class CallReceiver extends BroadcastReceiver {
                     //try {
                         String phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
                         incomingCall = true;
-                        Log.debug("phoneNumber = "+phoneNumber);
-
-                        handleIncomingCall(context,phoneNumber);
+                        Log.debug("phoneNumber1 = "+phoneNumber);
+                        if (phoneNumber!=null)
+                            handleIncomingCall(context,phoneNumber);
 
                    // } catch (Exception e) {
                      //   e.printStackTrace();
@@ -111,48 +114,11 @@ public class CallReceiver extends BroadcastReceiver {
         // Например, можно запустить уведомление или выполнить какие-то действия
         //Toast.makeText(context, incomingNumber+ ": "+Params.getCoordTxt(), Toast.LENGTH_LONG).show();
         final Handler h = new Handler();
-        /*new Thread(() -> {
-            try {
-                Coord coord = new Coord(context);
-                coord.startLocationUpdates();
-                // Установка слушателя для получения данных о местоположении
-                coord.setLocationListener(new Coord.LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-                        coord.onLocationReceived(location);
-                    }
-                });
-  //              int i=0;
-  //              while (i<5) {
- //                   Thread.sleep(2000);
-  //                 if (Params.longitude>0.01 && Params.latitude>0.01)
- //                      break;
- //                  i++;
-  //              }
-                h.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context,incomingNumber+ ": "+Params.getCoordTxt(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-               // Toast.makeText(context, incomingNumber+ ": "+Params.getCoordTxt(), Toast.LENGTH_LONG).show();
-
-                Log.debug("Show window: " + incomingNumber);
-                String urlString = "https://site-www.ru/maptrack/add_point.php?code=ag234678&is_log=1&lat="+Params.latitude+"&lon="+Params.longitude;
-                // textView.setText(urlString);
-                String response = HttpClient.sendGetRequest(urlString);
-                //runOnUiThread(() -> {
-               //     textView.setText("response="+response );
-                    // Обновите UI с полученными данными
-                  //  Toast.makeText(context, "response="+response+" "+Params.getCoordTxt(), Toast.LENGTH_SHORT).show();
-              //  });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-        */
-        LocationTask locationTask = new LocationTask(context);
-        locationTask.doInBackground();
+        //LocationTask locationTask = new LocationTask(context);
+        //locationTask.doInBackground();
+        //locationTask.execute();
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(HttpWorker.class).build();
+        WorkManager.getInstance(context).enqueue(workRequest);
     }
 
 
