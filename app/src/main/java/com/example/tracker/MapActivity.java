@@ -2,6 +2,7 @@ package com.example.tracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -29,12 +30,13 @@ public class MapActivity extends AppCompatActivity {
 
 
         mapView = findViewById(R.id.mapView);
-        //double latitude = getIntent().getDoubleExtra(MainActivity.par_latitude,0);
-       // double longitude = getIntent().getDoubleExtra(MainActivity.par_longitude,0);
+        Intent intent = getIntent();
+        double latitude = intent.getDoubleExtra("key_latitude",0);
+        double longitude = intent.getDoubleExtra("key_longitude",0);
         //Toast.makeText(MapActivity.this, "latitude="+latitude+", longitude="+longitude, Toast.LENGTH_LONG).show();
 
         mapView.getMapWindow().getMap().move(
-                new CameraPosition(new Point(Params.latitude, Params.longitude), 14.0f, 0.0f, 0.0f),
+                new CameraPosition(new Point(latitude, longitude), 14.0f, 0.0f, 0.0f),
                 new Animation(Animation.Type.SMOOTH, 3),
                 null);
 
@@ -44,7 +46,7 @@ public class MapActivity extends AppCompatActivity {
         Point point = new Point(latitude, longitude);
         mapView.getMap().getMapObjects().addPlacemark(point, customIcon);
  */
-        Point mappoint= new Point(Params.latitude, Params.longitude);
+        Point mappoint= new Point(latitude, longitude);
         mapView.getMap().getMapObjects().addPlacemark(mappoint);
 
         Button backButton = findViewById(R.id.btBack);

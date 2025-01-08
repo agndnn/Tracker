@@ -28,10 +28,14 @@ import com.yandex.mapkit.MapKitFactory;
 
 import android.content.pm.PackageManager;
 
+import java.io.Serializable;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button button;
     private Button buttonSave;
+    private Button buttonCallOut;
     private Coord coord;
     private TextView textView;
     //private MapView mapView;
@@ -47,19 +51,22 @@ public class MainActivity extends AppCompatActivity {
                            Manifest.permission.CALL_PHONE,
                            Manifest.permission.RECEIVE_BOOT_COMPLETED,
                            Manifest.permission.READ_PHONE_NUMBERS,
-                           Manifest.permission.READ_CALL_LOG
+                           Manifest.permission.READ_CALL_LOG,
+                           Manifest.permission.READ_CONTACTS
     };
     int requestCode = 123; // Любое число, которое вы выберете для
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MapKitFactory.setApiKey("a4304081-4a62-4707-9204-65de6edc6562");
+        MapKitFactory.setApiKey(Params.apiKey);
         MapKitFactory.initialize(this);
 // Запуск обновлений местоположения
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(permissions, 123);
         }
@@ -71,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         button = findViewById(R.id.button1);
         textView = findViewById(R.id.textView);
         buttonSave=findViewById(R.id.buttonSave);
+        buttonCallOut=findViewById(R.id.buttonCallOut);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,11 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
                 new Thread(() -> {
                     try {
-                        //String jsonBody = "{\"code\":\"ag234678\",\"is_log\":\"1\",\"lat\":\""
-                       //         +latitude+"\",\"lon\":\""+longitude+"\"}";
-                        String urlString = "https://site-www.ru/maptrack/add_point.php?code=ag234678&is_log=1&lat="+ Params.latitude +"&lon="+Params.longitude;
-                       // textView.setText(urlString);
-                        String response = HttpClient.sendGetRequest(urlString);
+                        String response = HttpClient.sendGetRequest(Params.getAddPointUrl());
                         runOnUiThread(() -> {
                             textView.setText("response="+response );
                             // Обновите UI с полученными данными
@@ -103,6 +107,16 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }).start();
+            }
+        });
+
+        buttonCallOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //   textView.setText("добрый");
+                //getCurrentLocation();
+                openCallOutActivity();
             }
         });
 
@@ -132,8 +146,16 @@ public class MainActivity extends AppCompatActivity {
 */
     private void openMapActivity() {
         Intent intent = new Intent(this, MapActivity.class);
- //       intent.putExtra(par_latitude, latitude); // Здесь передавайте значение первого параметра
- //       intent.putExtra(par_longitude, longitude); // Здесь передавайте значение второго параметра
+        intent.putExtra("key_latitude", Params.latitude);
+        intent.putExtra("key_longitude", Params.longitude);
+        startActivity(intent);
+    }
+
+    private void openCallOutActivity() {
+        CallLogsManager callLogsManager = new CallLogsManager(this);
+        List<CallLogsManager.CallLogEntry> callLogs = callLogsManager.getOutgoingCalls(Params.usersOut);
+        Intent intent = new Intent(this, CallOutActivity.class);
+        intent.putExtra(CallOutActivity.EXTRA_CALL_LOGS, (Serializable) callLogs);
         startActivity(intent);
     }
 

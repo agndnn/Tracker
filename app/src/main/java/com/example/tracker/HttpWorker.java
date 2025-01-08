@@ -10,17 +10,19 @@ import androidx.work.WorkerParameters;
 public class HttpWorker extends Worker {
     public HttpWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
+//        this.urlString = urlString;
     }
 
     @NonNull
     @Override
     public Result doWork() {
         // Ваш фоновой код
-        String urlString = Params.addPointUrl+"?code="+Params.userCode+"&is_log=1&lat=" + Params.latitude + "&lon=" + Params.longitude;
-        Log.debug("urlString ="+urlString );
+        String url = getInputData().getString("url");
+        //String urlString = Params.getAddPointUrl();
+        Log.debug("urlString ="+url); //Params.getAddPointUrl());
 
         try {
-            String response = HttpClient.sendGetRequest(urlString);
+            String response = HttpClient.sendGetRequest(url);
             Log.debug( "Response: " + response);
             return Result.success(); // Укажите, что работа выполнена успешно
         } catch (Exception e) {

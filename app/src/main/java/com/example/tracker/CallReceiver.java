@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
+import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -117,7 +118,12 @@ public class CallReceiver extends BroadcastReceiver {
         //LocationTask locationTask = new LocationTask(context);
         //locationTask.doInBackground();
         //locationTask.execute();
-        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(HttpWorker.class).build();
+        Data inputData = new Data.Builder()
+                .putString("url", Params.getAddPointUrl())
+                .build();
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(HttpWorker.class)
+                .setInputData(inputData)
+                .build();
         WorkManager.getInstance(context).enqueue(workRequest);
     }
 

@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_CALL_LOG"/>
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
 
 
@@ -37,6 +38,12 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:label="@string/title_activity_map"
+            android:theme="@style/Theme.Tracker.Fullscreen" />
+        <activity
+            android:name=".CallOutActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="CallOutActivity"
             android:theme="@style/Theme.Tracker.Fullscreen" />
         <activity
             android:name=".MainActivity"

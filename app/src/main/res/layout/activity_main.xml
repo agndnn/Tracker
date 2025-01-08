@@ -32,6 +32,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text=" в БД" />
+        <Button
+            android:id="@+id/buttonCallOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Исходящие вызовы" />
 
         <TextView
             android:id="@+id/textView"
