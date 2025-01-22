@@ -1,8 +1,8 @@
 package com.example.tracker;
 
 public class User {
-    String code;
-    String phone;
+    private  String code;
+    private  String phone;
 
     public User(String code, String phone){
         this.phone = phone;

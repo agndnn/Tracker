@@ -33,6 +33,7 @@ public class MapActivity extends AppCompatActivity {
         Intent intent = getIntent();
         double latitude = intent.getDoubleExtra("key_latitude",0);
         double longitude = intent.getDoubleExtra("key_longitude",0);
+        Log.debug("MapActivity latitude="+latitude+", longitude="+longitude);
         //Toast.makeText(MapActivity.this, "latitude="+latitude+", longitude="+longitude, Toast.LENGTH_LONG).show();
 
         mapView.getMapWindow().getMap().move(

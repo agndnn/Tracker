@@ -28,7 +28,7 @@ public class CallLogsManager {
     }
 
     @SuppressLint("Range")
-    public List<CallLogEntry> getOutgoingCalls(User[] users) {
+    public List<CallLogEntry> getOutgoingCalls(ArrayList<User> users) {
         List<CallLogEntry> callLogEntries = new ArrayList<>();
 
         // Создаем мапу для быстрого поиска имен контактов по номерам
@@ -64,7 +64,7 @@ public class CallLogsManager {
                 // Проверяем, попадает ли номер в целевые номера
                 for (User user : users) {
 //                    if (number.replace("+", "").equals(user.getPhone().replace("+", ""))) {
-                    if (number.substring(number.length() - 10).equals (user.getPhone().substring(user.getPhone().length() - 10))) {
+                    if (number.length()>10 && (number.substring(number.length() - 10).equals (user.getPhone().substring(user.getPhone().length() - 10)))) {
                         String name = numberToNameMap.getOrDefault(number.substring(number.length() - 10), "Unknown");
                         boolean isExist = false;
                         for (CallLogEntry callLogEntry:callLogEntries){
@@ -85,7 +85,7 @@ public class CallLogsManager {
     }
 
     @SuppressLint("Range")
-    private void fetchContacts(HashMap<String, String> numberToNameMap, User[] users) {
+    private void fetchContacts(HashMap<String, String> numberToNameMap, ArrayList<User> users) {
         ContentResolver cr = context.getContentResolver();
         Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, null, null, null);

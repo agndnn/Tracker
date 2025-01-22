@@ -38,6 +38,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Исходящие вызовы" />
+        <Button
+            android:id="@+id/buttonParams"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Настройка" />
 
         <TextView
             android:id="@+id/textView"

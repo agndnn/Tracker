@@ -33,9 +33,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    DatabaseHelper databaseHelper;
     private Button button;
     private Button buttonSave;
     private Button buttonCallOut;
+    private Button buttonParams;
     private Coord coord;
     private TextView textView;
     //private MapView mapView;
@@ -58,8 +60,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MapKitFactory.setApiKey(Params.apiKey);
+        databaseHelper = new DatabaseHelper(this);
+        databaseHelper.getParams();
+        MapKitFactory.setApiKey(Params.getApiKey());
         MapKitFactory.initialize(this);
+
 // Запуск обновлений местоположения
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -79,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         textView = findViewById(R.id.textView);
         buttonSave=findViewById(R.id.buttonSave);
         buttonCallOut=findViewById(R.id.buttonCallOut);
+        buttonParams=findViewById(R.id.buttonParams);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +126,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        buttonParams.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openParamsActivity();
+            }
+        });
+
         Intent serviceIntent = new Intent(this, CallReceiver.class);
         startService(serviceIntent);
 
@@ -156,6 +169,12 @@ public class MainActivity extends AppCompatActivity {
         List<CallLogsManager.CallLogEntry> callLogs = callLogsManager.getOutgoingCalls(Params.usersOut);
         Intent intent = new Intent(this, CallOutActivity.class);
         intent.putExtra(CallOutActivity.EXTRA_CALL_LOGS, (Serializable) callLogs);
+        startActivity(intent);
+    }
+
+    private void openParamsActivity() {
+        Log.debug("openParamsActivity started");
+        Intent intent = new Intent(this, ParamsActivity.class);
         startActivity(intent);
     }
 

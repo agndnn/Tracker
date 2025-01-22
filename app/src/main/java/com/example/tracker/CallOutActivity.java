@@ -52,8 +52,6 @@ public class CallOutActivity extends Activity{
                     String code = Params.getUserCodeByPhone(selectePhone);
                     Log.debug("code="+code+", selectePhone="+selectePhone);
                     buttonToMap.setEnabled(false);
-                    this.latitude=0;
-                    this.longitude=0;
                     if (code!=null ) {
                         if ((callLogs.get(position).getLatitude() == null) && (callLogs.get(position).getErrCode() == 0)) {
                             new Thread(() -> {

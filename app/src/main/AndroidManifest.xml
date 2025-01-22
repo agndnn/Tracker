@@ -46,6 +46,13 @@
             android:label="CallOutActivity"
             android:theme="@style/Theme.Tracker.Fullscreen" />
         <activity
+            android:name=".ParamsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="ParamsActivity"
+            android:theme="@style/Theme.Tracker" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
