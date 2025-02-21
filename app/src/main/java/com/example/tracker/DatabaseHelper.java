@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "params.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Таблица для параметров
     private static final String TABLE_NAME = "params";
@@ -21,6 +21,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_IS_AUTO_RUN = "isAutoRun";
     private static final String COLUMN_HOME_URL = "homeUrl";
     private static final String COLUMN_USER_CODE = "userCode";
+    private static final String COLUMN_USER_PHONE = "userPhone";
+    private static final String COLUMN_USER_NAME = "userName";
     private static final String COLUMN_API_KEY = "apiKey";
 
     // Таблица для пользователей
@@ -43,6 +45,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_IS_AUTO_RUN + " TEXT, " +
                 COLUMN_HOME_URL + " TEXT, " +
                 COLUMN_USER_CODE + " TEXT, " +
+                COLUMN_USER_PHONE + " TEXT, " +
+                COLUMN_USER_NAME + " TEXT, " +
                 COLUMN_API_KEY + " TEXT)";
         db.execSQL(createParamsTable);
 
@@ -71,6 +75,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_IS_AUTO_RUN, Params.IsAutoRun);
         values.put(COLUMN_HOME_URL, Params.homeUrl);
         values.put(COLUMN_USER_CODE, Params.userCode);
+        values.put(COLUMN_USER_PHONE, Params.userPhone);
+        values.put(COLUMN_USER_NAME, Params.userName);
         values.put(COLUMN_API_KEY, Params.apiKey);
 
         db.insert(TABLE_NAME, null, values);
@@ -105,6 +111,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Params.IsAutoRun = cursor.getString(cursor.getColumnIndex(COLUMN_IS_AUTO_RUN));
             Params.homeUrl = cursor.getString(cursor.getColumnIndex(COLUMN_HOME_URL));
             Params.userCode = cursor.getString(cursor.getColumnIndex(COLUMN_USER_CODE));
+            Params.userPhone = cursor.getString(cursor.getColumnIndex(COLUMN_USER_PHONE));
+            Params.userName = cursor.getString(cursor.getColumnIndex(COLUMN_USER_NAME));
             Params.apiKey = cursor.getString(cursor.getColumnIndex(COLUMN_API_KEY));
             cursor.close();
         }
@@ -112,6 +120,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         //Params.usersOut.add(new User("ag234678","79585487061"));
         //Params.usersOut.add(new User("sv23457","79081642616"));
+        Params.usersOut.clear();
         cursor = db.query(USERS_TABLE_NAME, null, null, null, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
             do {

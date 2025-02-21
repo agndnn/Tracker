@@ -3,6 +3,8 @@ package com.example.tracker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +14,9 @@ import com.yandex.mapkit.Animation;
 import com.yandex.mapkit.MapKitFactory;
 import com.yandex.mapkit.geometry.Point;
 import com.yandex.mapkit.map.CameraPosition;
+import com.yandex.mapkit.map.IconStyle;
+import com.yandex.mapkit.map.MapObjectCollection;
+import com.yandex.mapkit.map.PlacemarkMapObject;
 import com.yandex.mapkit.mapview.MapView;
 
 import java.util.Objects;
@@ -49,6 +54,7 @@ public class MapActivity extends AppCompatActivity {
  */
         Point mappoint= new Point(latitude, longitude);
         mapView.getMap().getMapObjects().addPlacemark(mappoint);
+        //addCustomPlacemark(latitude, longitude);
 
         Button backButton = findViewById(R.id.btBack);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -58,8 +64,25 @@ public class MapActivity extends AppCompatActivity {
             }
         });
         }
+/*
+    private void addCustomPlacemark(double latitude, double longitude) {
+        Point mappoint = new Point(latitude, longitude);
 
+        // Получите коллекцию объектов карты
+        MapObjectCollection mapObjects = mapView.getMap().getMapObjects();
 
+        // Загрузите ваше изображение из ресурсов
+        Drawable drawable = getResources().getDrawable(R.drawable.your_custom_marker);
+
+        // Создайте метку с кастомной иконкой
+        PlacemarkMapObject placemark = mapObjects.addPlacemark(mappoint);
+
+        // Можно настроить дополнительные параметры, например, задать размер, если это необходимо
+        placemark.setIconStyle(new IconStyle()
+                .setScale(1.5f) // Установите масштаб для увеличения размера иконки
+                .setAnchor(new PointF(0.5f, 1))); // Установите привязку иконки (центр по горизонтали, низ по вертикали)
+    }
+*/
     @Override
     protected void onStop() {
         mapView.onStop();

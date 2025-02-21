@@ -1,14 +1,17 @@
 package com.example.tracker;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 //import androidx.work.OneTimeWorkRequest;
 //import androidx.work.WorkManager;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
@@ -31,15 +34,18 @@ import android.content.pm.PackageManager;
 import java.io.Serializable;
 import java.util.List;
 
+@RequiresApi(api = Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 public class MainActivity extends AppCompatActivity {
 
+    private static boolean isMapKitInitialized = false;
     DatabaseHelper databaseHelper;
     private Button button;
-    private Button buttonSave;
+    private Button buttonTest;
     private Button buttonCallOut;
     private Button buttonParams;
-    private Coord coord;
+   // private Coord coord;
     private TextView textView;
+    Context context;
     //private MapView mapView;
    // protected static final String par_latitude = "latitude";
     //protected static final String par_longitude = "longitude";
@@ -54,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
                            Manifest.permission.RECEIVE_BOOT_COMPLETED,
                            Manifest.permission.READ_PHONE_NUMBERS,
                            Manifest.permission.READ_CALL_LOG,
-                           Manifest.permission.READ_CONTACTS
+                           Manifest.permission.READ_CONTACTS,
+                           Manifest.permission.FOREGROUND_SERVICE_LOCATION
     };
     int requestCode = 123; // Любое число, которое вы выберете для
     @Override
@@ -62,27 +69,35 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         databaseHelper = new DatabaseHelper(this);
         databaseHelper.getParams();
-        MapKitFactory.setApiKey(Params.getApiKey());
-        MapKitFactory.initialize(this);
+        context = this;
 
-// Запуск обновлений местоположения
+        if (!isMapKitInitialized) {
+            MapKitFactory.setApiKey(Params.getApiKey());
+            MapKitFactory.initialize(this);
+            isMapKitInitialized = true;
+        }
+
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE_LOCATION) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(permissions, 123);
         }
 
-         coord =new Coord(this);
+        //coord =new Coord(this);
+        Intent serviceLocationIntent = new Intent(this, LocationService.class);
+        startService(serviceLocationIntent);
+        Log.debug("Запущен сервис геолокации.");
 
         setContentView(R.layout.activity_main);
        // mapView = findViewById(R.id.mapView);
         button = findViewById(R.id.button1);
         textView = findViewById(R.id.textView);
-        buttonSave=findViewById(R.id.buttonSave);
+        buttonTest=findViewById(R.id.buttonTest);
         buttonCallOut=findViewById(R.id.buttonCallOut);
         buttonParams=findViewById(R.id.buttonParams);
 
@@ -97,10 +112,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        buttonSave.setOnClickListener(new View.OnClickListener() {
+        buttonTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                textView.setText("Идет определение координат...");
+                LocationHelper locationHelper = new LocationHelper(context);
+                locationHelper.getLocation(new LocationHelper.OnLocationReceivedListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onLocationReceived(double latitude, double longitude) {
+                        Log.debug( "Received Location: Latitude: " + latitude + ", Longitude: " + longitude);
+                        //TextView textView = ((MainActivity) context).findViewById(R.id.textView);
+                        textView.setText("Широта: " + Params.latitude + " Долгота: " +Params.longitude);
+                        // Здесь вы можете использовать полученные координаты
+                        locationHelper.stopLocationUpdates();
 
+                    }
+                });
+/*
                 new Thread(() -> {
                     try {
                         String response = HttpClient.sendGetRequest(Params.getAddPointUrl());
@@ -113,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }).start();
+
+ */
             }
         });
 
@@ -135,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent serviceIntent = new Intent(this, CallReceiver.class);
         startService(serviceIntent);
+
 
 
     //    startForegroundService(serviceIntent);
@@ -204,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //if (requestingLocationUpdates) {
-            coord.startLocationUpdates();
+        //    coord.startLocationUpdates();
         //}
     }
 

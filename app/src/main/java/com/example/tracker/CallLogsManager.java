@@ -116,6 +116,7 @@ public class CallLogsManager {
         private String duration;
         private String latitude;
         private String longitude;
+        private String coorDate; //дата время получения координат
         private int errCode;
         private  String errMsg;
 
@@ -135,14 +136,15 @@ public class CallLogsManager {
                 ret = ret + "\n"+"Ошибка "+errCode+":"+errMsg;
             }
             else if (longitude!=null){
-                ret = ret + "\n"+"Коорд:"+latitude+"/"+longitude;
+                ret = ret + "\n"+"Коорд:"+latitude+"/"+longitude+", время:"+coorDate;
             }
             return ret;
         }
 
-        public  CallLogEntry  addCoord(String latitude, String longitude){
+        public  CallLogEntry  addCoord(String latitude, String longitude, String coorDate){
             this.latitude = latitude;
             this.longitude = longitude;
+            this.coorDate = coorDate;
             return this;
         }
         public  CallLogEntry  addErr(int errCode, String errMsg){

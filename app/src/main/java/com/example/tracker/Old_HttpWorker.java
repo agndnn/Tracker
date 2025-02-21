@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-public class HttpWorker extends Worker {
-    public HttpWorker(@NonNull Context context, @NonNull WorkerParameters params) {
+public class Old_HttpWorker extends Worker {
+    public Old_HttpWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
 //        this.urlString = urlString;
     }

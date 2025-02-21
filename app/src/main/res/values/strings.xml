@@ -11,5 +11,6 @@
     <string name="cancel_label">Отказаться</string>
     <string name="yes_label">Да</string>
     <string name="no_label">Нет</string>
+    <string name="register_label">Регистрация</string>
 
 </resources>

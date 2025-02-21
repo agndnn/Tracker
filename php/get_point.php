@@ -2,7 +2,7 @@
 /*https://www.site-www.ru/maptrack/get_points.php*/
 include("config.php");
 //session_start();
-$filename = 'log.txt';
+$filename = 'get_point_log.txt';
 $sysdate = date('d.m.Y H:i:s', time());
 
 if($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -44,6 +44,9 @@ else {
   $rows["errm"] = mysqli_error($conn);
 }
 
+$entry = $sysdate.";phone=".$phone.";code=".$code.";row=".json_encode($rows)."\n";
+file_put_contents($filename, $entry, FILE_APPEND|LOCK_EX);
 echo(json_encode($rows));
+
 
 ?>

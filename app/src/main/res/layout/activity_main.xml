@@ -27,12 +27,6 @@
             android:text="На карту" />
 
         <Button
-            android:id="@+id/buttonSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text=" в БД" />
-        <Button
             android:id="@+id/buttonCallOut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,6 +38,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Настройка" />
+
+        <Button
+            android:id="@+id/buttonTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Тестирование" />
 
         <TextView
             android:id="@+id/textView"

@@ -10,11 +10,19 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.view.LayoutInflater;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class ParamsActivity extends AppCompatActivity {
 
@@ -26,6 +34,8 @@ public class ParamsActivity extends AppCompatActivity {
     CheckBox isAutoRunCheckBox;
     EditText homeUrlEditText;
     EditText userCodeEditText;
+    EditText userPhoneEditText;
+    EditText userNameEditText;
     EditText apiKeyEditText;
 
     private UserAdapter userAdapter;
@@ -43,8 +53,11 @@ public class ParamsActivity extends AppCompatActivity {
         isAutoRunCheckBox = findViewById(R.id.is_auto_run_checkbox);
         homeUrlEditText = findViewById(R.id.home_url_edit_text);
         userCodeEditText = findViewById(R.id.user_code_edit_text);
+        userPhoneEditText = findViewById(R.id.user_phone_edit_text);
+        userNameEditText = findViewById(R.id.user_name_edit_text);
         apiKeyEditText = findViewById(R.id.api_key_edit_text);
         Button saveButton = findViewById(R.id.save_button);
+        Button registerButton = findViewById(R.id.register_button);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         userAdapter = new UserAdapter(this, usersOut);
@@ -67,6 +80,14 @@ public class ParamsActivity extends AppCompatActivity {
                 saveParams();
             }
         });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerData();
+            }
+        });
+
     }
 
     private void loadParams() {
@@ -75,6 +96,8 @@ public class ParamsActivity extends AppCompatActivity {
         isAutoRunCheckBox.setChecked(Params.IsAutoRun.equals("Y"));
         homeUrlEditText.setText(Params.homeUrl);
         userCodeEditText.setText(Params.userCode);
+        userPhoneEditText.setText(Params.userPhone);
+        userNameEditText.setText(Params.userName);
         apiKeyEditText.setText(Params.apiKey);
     }
 
@@ -84,6 +107,8 @@ public class ParamsActivity extends AppCompatActivity {
         Params.IsAutoRun = isAutoRunCheckBox.isChecked() ? "Y" : "N";
         Params.homeUrl = homeUrlEditText.getText().toString();
         Params.userCode = userCodeEditText.getText().toString();
+        Params.userPhone = userPhoneEditText.getText().toString();
+        Params.userName = userNameEditText.getText().toString();
         Params.apiKey = apiKeyEditText.getText().toString();
 
         // Вставляем или обновляем параметры в базе данных
@@ -92,6 +117,37 @@ public class ParamsActivity extends AppCompatActivity {
 
         Toast.makeText(ParamsActivity.this, "Параметры сохранены!", Toast.LENGTH_SHORT).show();
     }
+
+    private void registerData() {
+        HttpHelper httpHelper = new HttpHelper();
+        String url = Params.getRegisterUrl();
+
+        httpHelper.executeRequest(url, new Callback() {
+            @Override
+            public void onFailure(Call call, @NonNull IOException e) {
+                // Обработать ошибку
+                android.util.Log.e("HTTP_ERROR", "Failed to fetch data", e);
+//                Toast.makeText(ParamsActivity.this, "Ошибка регистрации: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(ParamsActivity.this, "Ошибка регистрации: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                // Обработать успешный ответ
+                if (response.isSuccessful()) {
+                    String responseData = response.body().string();
+                    android.util.Log.d("HTTP_RESPONSE", responseData);
+//                    Toast.makeText(ParamsActivity.this, "Успешная регистрация: ", Toast.LENGTH_SHORT).show();
+                    runOnUiThread(() -> {
+                        Toast.makeText(ParamsActivity.this, "Успешная регистрация", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+        });
+    }
+
     // Метод для показа диалога добавления пользователя
     /*
     private void showAddUserDialog() {

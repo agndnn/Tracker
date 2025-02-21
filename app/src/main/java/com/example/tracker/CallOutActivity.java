@@ -47,6 +47,7 @@ public class CallOutActivity extends Activity{
             listView.setOnItemClickListener((parent, view, position, id) -> {
                 // Получаем выбранный номер на основании выбранного элемента списка
                 selectePhone = callLogs.get(position).getNumber();
+                selectePhone = Params.getCanonicalPhone(selectePhone);
                 if (selectePhone != null) {
                     //TODO
                     String code = Params.getUserCodeByPhone(selectePhone);
@@ -56,7 +57,9 @@ public class CallOutActivity extends Activity{
                         if ((callLogs.get(position).getLatitude() == null) && (callLogs.get(position).getErrCode() == 0)) {
                             new Thread(() -> {
                                 try {
-                                    String response = HttpClient.sendGetRequest(Params.getCoordFromUrl(code, selectePhone));
+                                    String url=Params.getCoordFromUrl(code,selectePhone);
+                                    Log.debug("url="+url);
+                                    String response = HttpClient.sendGetRequest(url);
                                     runOnUiThread(() -> {
                                         Log.debug("response=" + response);
                                         // Получаем значение поля "errc"
@@ -67,11 +70,13 @@ public class CallOutActivity extends Activity{
                                                 JSONObject dataObject = jsonObject.getJSONObject("data");
                                                 String latitude = dataObject.getString("latitude");
                                                 String longitude = dataObject.getString("longitude");
+                                                String coorDate = dataObject.getString("modified_date");
                                                 Log.debug("latitude=" + latitude + ", longitude=" + longitude);
                                                 this.latitude = Double.parseDouble(latitude);
                                                 this.longitude = Double.parseDouble(longitude);
 
-                                                callLogs.set(position, callLogs.get(position).addCoord(latitude, longitude));
+
+                                                callLogs.set(position, callLogs.get(position).addCoord(latitude, longitude, coorDate));
                                                 buttonToMap.setEnabled(true);
                                             } else {
                                                 String errm = jsonObject.getString("errm");

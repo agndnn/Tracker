@@ -15,7 +15,7 @@ function log_msg($p_msg)
 include("config.php");
 
 //session_start();
-$filename = 'log.txt';
+$filename = 'add_point_log.txt';
 $sysdate = date('d.m.Y H:i:s', time());
 
 if($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -38,7 +38,7 @@ $sql = "SELECT p.id_user,p.latitude,p.longitude
 		  AND u.code = '$usercode'";
 $result = mysqli_query($conn,$sql);
 if ($result){
-	if (mysqli_num_rows($result)==1){ //пользователь существует
+	if (mysqli_num_rows($result)>=1){ //пользователь существует
 		$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
 		$id_user = $row['id_user'];
 		$sql="update map_point set latitude=$lat, longitude=$lon, modified_date=SYSDATE() where id_user=$id_user";
