@@ -3,4 +3,14 @@
     <string name="title_activity_map">MapActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="edit_user_header">Редактирование данных пользователя</string>
+    <string name="add_user_header">Добавление данных пользователя</string>
+    <string name="delete_user_header">Удаление</string>
+    <string name="delete_user_msg">Вы уверены, что хотите удалить пользателя?</string>
+    <string name="save_label">Сохранить</string>
+    <string name="cancel_label">Отказаться</string>
+    <string name="yes_label">Да</string>
+    <string name="no_label">Нет</string>
+    <string name="register_label">Регистрация</string>
+
 </resources>

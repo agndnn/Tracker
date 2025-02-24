@@ -14,11 +14,15 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
-public class Coord {
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
+public class Old_Coord {
     LocationRequest locationRequest;
     private FusedLocationProviderClient fusedLocationClient;
     //  LocationCallback locationCallback;
-
+    Context context;
     private LocationListener locationListener;
 
     public interface LocationListener {
@@ -34,13 +38,15 @@ public class Coord {
             locationListener.onLocationChanged(location);
         }
     }
-    Coord(Context context){
+    Old_Coord(Context context){
         // Создание слушателя для обработки обновлений местоположения
+        this.context = context;
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         locationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(5000) // Интервал обновления местоположения в миллисекундах
                 .setFastestInterval(2000); // Самый быстрый интервал обновления в миллисекундах
+        Log.debug("Запрос координат создан.");
         locationCallback = new LocationCallback() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -59,6 +65,7 @@ public class Coord {
                             TextView textView = ((MainActivity) context).findViewById(R.id.textView);
                             textView.setText("Широта: " + Params.latitude + " Долгота: " +Params.longitude);
                         }
+                        sendCoord();
                     }
                 }
             }
@@ -81,6 +88,22 @@ public class Coord {
             }
         }
     };
+
+    public void sendCoord(){
+        if (Params.coordRequestTries>0){
+            Data inputData = new Data.Builder()
+                    .putString("url", Params.getAddPointUrl())
+                    .build();
+            OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(Old_HttpWorker.class)
+                    .setInputData(inputData)
+                    .build();
+            WorkManager.getInstance(context).enqueue(workRequest);
+            Log.debug("Координаты переданы");
+            Params.coordRequestTries--;
+
+        }
+
+    }
 
     // Добавляем метод, который будет вызываться после получения местоположения
     public void onLocationReceived(Location location) {
