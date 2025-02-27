@@ -5,6 +5,7 @@ include("config.php");
 $filename = 'get_point_log.txt';
 $sysdate = date('d.m.Y H:i:s', time());
 
+
 if($_SERVER["REQUEST_METHOD"] == "GET") {
 	$phone=$_GET["phone"];
 	$code=$_GET["code"];
@@ -40,7 +41,7 @@ if ($result){
 
 }
 else {
-  $rows["errc"] = mysqli_errno($conn);
+  $rows["errc"] = 2;
   $rows["errm"] = mysqli_error($conn);
 }
 

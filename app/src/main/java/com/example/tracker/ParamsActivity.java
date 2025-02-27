@@ -18,6 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.view.LayoutInflater;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -120,6 +123,9 @@ public class ParamsActivity extends AppCompatActivity {
 
     private void registerData() {
         HttpHelper httpHelper = new HttpHelper();
+        Params.userCode = userCodeEditText.getText().toString();
+        Params.userPhone = userPhoneEditText.getText().toString();
+        Params.userName = userNameEditText.getText().toString();
         String url = Params.getRegisterUrl();
 
         httpHelper.executeRequest(url, new Callback() {
@@ -138,11 +144,27 @@ public class ParamsActivity extends AppCompatActivity {
                 // Обработать успешный ответ
                 if (response.isSuccessful()) {
                     String responseData = response.body().string();
-                    android.util.Log.d("HTTP_RESPONSE", responseData);
-//                    Toast.makeText(ParamsActivity.this, "Успешная регистрация: ", Toast.LENGTH_SHORT).show();
-                    runOnUiThread(() -> {
-                        Toast.makeText(ParamsActivity.this, "Успешная регистрация", Toast.LENGTH_SHORT).show();
-                    });
+                    Log.debug("responseData="+responseData);
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        int errc = jsonObject.getInt("errc");
+                        String errm = jsonObject.getString("errm");
+                        if (errc==0){
+                            runOnUiThread(() -> {
+                                Toast.makeText(ParamsActivity.this, "Успешная регистрация", Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                        else {
+                            runOnUiThread(() -> {
+                                Toast.makeText(ParamsActivity.this, "Ошибка "+errm, Toast.LENGTH_SHORT).show();
+                            });
+
+                        }
+                    } catch (JSONException e) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(ParamsActivity.this, "Ошибка: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+                    }
                 }
             }
         });

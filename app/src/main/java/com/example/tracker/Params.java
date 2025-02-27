@@ -22,9 +22,9 @@ public final class Params {
     static  String apiKey;
     private static  String apiKeyDefault = "a4304081-4a62-4707-9204-65de6edc6562";
 
-    static int httpMaxRetries = 1; // Максимальное количество повторных попыток отправки координат через HTTP
-    static int httpRetries; // Максимальное количество повторных попыток отправки координат через HTTP
-    static int httpDelayInSeconds = 1; // Задержка в секундах между попытками отправки координат через HTTP
+    //static int httpMaxRetries = 1; // Максимальное количество повторных попыток отправки координат через HTTP
+    //static int httpRetries; // Максимальное количество повторных попыток отправки координат через HTTP
+    //static int httpDelayInSeconds = 1; // Задержка в секундах между попытками отправки координат через HTTP
 
     //отслеживаемые номера (исходящие)
     //static  String[] phonesOut= {"79585487061", "79081642616"};
@@ -40,7 +40,7 @@ public final class Params {
     }
     static  String getAddPointUrl(){
         String url = (homeUrl==null||homeUrl.equals(""))?homeUrlDefault:homeUrl;
-        url=url+"/add_point.php?code="+Params.userCode+"&is_log=1&lat=" + Params.latitude + "&lon=" + Params.longitude;
+        url=url+"/add_point.php?code="+Params.userCode+"&phone="+Params.userPhone+"&is_log=1&lat=" + Params.latitude + "&lon=" + Params.longitude;
         return (url);
     }
     static  String getCoordFromUrl(String code, String phone){
