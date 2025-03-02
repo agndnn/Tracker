@@ -4,22 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="app.unitTest">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="app.main">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="app.androidTest">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="AndroidStudioProjects.Tracker.app">
-        <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-01-02T17:50:25.096787100Z">
+        <DropdownSelection timestamp="2025-03-02T15:31:25.524879200Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=5h6py5kr85j745am" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=1360dc060403" />
             </handle>
           </Target>
         </DropdownSelection>

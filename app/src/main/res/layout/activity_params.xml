@@ -6,8 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/bg2"
-
     android:padding="10dp">
 
     <TextView
@@ -188,6 +186,15 @@
         android:layout_height="wrap_content"
         android:text="@string/save_label"
         android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/backButton"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="240dp"
+        android:layout_marginTop="-40dp"
+        android:layout_width="120dp"
+        android:onClick="onBackButtonClick"
+        android:text="Назад" />
 
 </LinearLayout>
 </ScrollView>
