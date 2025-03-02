@@ -2,6 +2,7 @@ package com.example.tracker;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,6 +20,7 @@ public class CallOutActivity extends Activity{
     private ListView listView;
     private TextView tvEmpty;
     private Button buttonToMap;
+    private Button callButton;
 
     private double latitude;
     private double longitude;
@@ -32,8 +34,9 @@ public class CallOutActivity extends Activity{
         listView = findViewById(R.id.list_call_out);
         tvEmpty = findViewById(R.id.tv_empty);
         buttonToMap = findViewById(R.id.button_call_out_tomap);
-
+        callButton = findViewById(R.id.callButton);
         buttonToMap.setEnabled(false);
+        callButton.setEnabled(false);
 
         // Получаем данные из Intent
         List<CallLogsManager.CallLogEntry> callLogs = (List<CallLogsManager.CallLogEntry>) getIntent().getSerializableExtra(EXTRA_CALL_LOGS);
@@ -49,7 +52,7 @@ public class CallOutActivity extends Activity{
                 selectePhone = callLogs.get(position).getNumber();
                 selectePhone = Params.getCanonicalPhone(selectePhone);
                 if (selectePhone != null) {
-                    //TODO
+                    callButton.setEnabled(true);
                     String code = Params.getUserCodeByPhone(selectePhone);
                     Log.debug("code="+code+", selectePhone="+selectePhone);
                     buttonToMap.setEnabled(false);
@@ -98,6 +101,7 @@ public class CallOutActivity extends Activity{
                             }).start();
                         } else if (callLogs.get(position).getLatitude() != null) {
                             buttonToMap.setEnabled(true);
+
                         }
                     }
                 }
@@ -137,7 +141,13 @@ public class CallOutActivity extends Activity{
             }
         });
 
- //   }
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "+7"+selectePhone));
+                startActivity(callIntent);
+            }
+        });
     }
 
 

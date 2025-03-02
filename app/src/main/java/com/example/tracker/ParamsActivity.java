@@ -90,7 +90,14 @@ public class ParamsActivity extends AppCompatActivity {
                 registerData();
             }
         });
-
+        ///////
+        Button buttonClose = findViewById(R.id.backButton);
+        buttonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     private void loadParams() {
