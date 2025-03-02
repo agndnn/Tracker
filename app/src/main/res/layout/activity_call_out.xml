@@ -27,6 +27,12 @@
         android:orientation="horizontal"
         android:gravity="center">
         <Button
+            android:id="@+id/callButton"
+            android:layout_height="wrap_content"
+            android:layout_width="123dp"
+            android:text="Позвонить"/>
+
+        <Button
             android:id="@+id/button_call_out_tomap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
