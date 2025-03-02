@@ -6,6 +6,7 @@
     android:layout_height="fill_parent"
     android:gravity="center"
     android:scrollbars="none"
+    android:background="@drawable/bg2"
     tools:ignore="RtlHardcoded">
 
     <LinearLayout
@@ -17,26 +18,25 @@
         android:paddingLeft="20dp"
         android:paddingTop="200dp"
         android:paddingRight="20dp"
-        android:paddingBottom="20dp">
-
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="На карту" />
+        android:paddingBottom="20dp"
+        >
 
         <Button
             android:id="@+id/buttonCallOut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Исходящие вызовы" />
+            android:text="Исходящие вызовы"
+            android:layout_marginBottom="12dp"
+            android:padding="15dp"
+            />
         <Button
             android:id="@+id/buttonParams"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:padding="15dp"
+            android:layout_marginBottom="12dp"
             android:text="Настройка" />
 
         <Button
@@ -44,7 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Тестирование" />
+            android:padding="15dp"
+            android:text="Мои координаты" />
 
         <TextView
             android:id="@+id/textView"
@@ -52,7 +53,17 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="14dp"
             android:text="Результат" />
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="15dp"
+            android:layout_marginBottom="14dp"
+            android:text="На карту" />
 
     </LinearLayout>
 </ScrollView>

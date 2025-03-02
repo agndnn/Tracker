@@ -23,7 +23,9 @@ public class CallReceiver extends BroadcastReceiver {
     //private MyPhoneStateListener phoneStateListener;
   //  double latitude;
   //  double longitude;
-
+    private static final int[] DELAYS = {20000, 30000, 40000, 60000, 12000, 24000}; // 20с, 30с, 60с, 2мин, 4 мин - повторы отправки при неудаче
+    private int currentAttempt = 0;
+    private Handler handler = new Handler();
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -66,53 +68,7 @@ public class CallReceiver extends BroadcastReceiver {
             }
         }
     }
-    /*
-    @Override
-    public void onCreate() {
-        super.onCreate();
-      //  Toast.makeText(getApplicationContext(), "OnCreate=", Toast.LENGTH_SHORT).show();
-        //telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        //phoneStateListener = new MyPhoneStateListener();
 
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        Toast.makeText(this, "onStartCommandstart", Toast.LENGTH_SHORT).show();
-        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-
-        PhoneStateListener callStateListener = new PhoneStateListener() {
-            @Override
-            public void onCallStateChanged(int state, String incomingNumber) {
-                super.onCallStateChanged(state,incomingNumber);
-                Context context = getApplicationContext();
-                Toast.makeText(context, incomingNumber+ " TelephonyManager.CALL_STATE_RINGING: "+state, Toast.LENGTH_LONG).show();
-                if (state==TelephonyManager.CALL_STATE_RINGING) {
-   //                 String mDirName = mDBConnector.getDirNameByPhone(incomingNumber);
-   //                 String msg = incomingNumber+'-'+mDirName;
-    //                int duration = Toast.LENGTH_LONG;
-                //    for (int i = 1; i <= 3; i++) {
-                        Toast.makeText(context, incomingNumber+ ": "+Params.getCoordTxt(), Toast.LENGTH_LONG).show();
-
-               // if (incomingNumber.length()>0)
-                        handleIncomingCall(incomingNumber);
-                }
-
-            }
-        };
-
-
-        telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);//.LISTEN_CALL_STATE
-
-        return Service.START_STICKY;
-    }
-*/
 
     private void handleIncomingCall(Context context, String incomingNumber) {
         // Вызываем свой метод при поступлении звонка
@@ -134,8 +90,8 @@ public class CallReceiver extends BroadcastReceiver {
     }
 
     public void sendCoord(Context context){
-        Params.coordRequestTries = Params.coordRequestTriesDefault; //нужно отправить координаты
-        Log.debug("Установлен флаг передачи координат Params.coordRequestTries="+Params.coordRequestTries );
+        //Params.coordRequestTries = Params.coordRequestTriesDefault; //нужно отправить координаты
+       // Log.debug("Установлен флаг передачи координат Params.coordRequestTries="+Params.coordRequestTries );
 
 //      if (Params.coordRequestTries>0){
             // Получаем гео-координаты
@@ -149,12 +105,25 @@ public class CallReceiver extends BroadcastReceiver {
 
                 HttpHelper httpHelper = new HttpHelper();
                 String url = Params.getAddPointUrl();
+                Log.debug("Params.getAddPointUrl()="+Params.getAddPointUrl());
 
                 httpHelper.executeRequest(url, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         // Обработать ошибку
-                        android.util.Log.e("HTTP_ERROR", "Failed to fetch data", e);
+                        if (currentAttempt < DELAYS.length) {
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    currentAttempt++;
+                                    Log.debug( "Не удалось отправить координаты. Повторная попытка отправки № "+currentAttempt);
+                                    sendCoord(context);
+                                }
+                            }, DELAYS[currentAttempt]);
+                        } else {
+                            Log.debug( "Не удалось отправить запрос после нескольких попыток ("+currentAttempt+")");
+                        }
+                       // android.util.Log.e("HTTP_ERROR", "Failed to fetch data", e);
                     }
 
                     @Override
@@ -162,7 +131,7 @@ public class CallReceiver extends BroadcastReceiver {
                         // Обработать успешный ответ
                         if (response.isSuccessful()) {
                             String responseData = response.body().string();
-                            android.util.Log.d("HTTP_RESPONSE", responseData);
+                            android.util.Log.d("HTTP_RESPONSE", "Координаты успешно отправлены. responseData="+responseData);
 //                        Params.coordRequestTries--;
                             // stopSelf();
                         }

@@ -35,13 +35,20 @@ public class LocationHelper {
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
+                int i=0;
                 for (Location location : locationResult.getLocations()) {
                     if (location != null) {
-                        Params.latitude = location.getLatitude();
-                        Params.longitude = location.getLongitude();
-                        Log.d("LocationHelper", "Latitude: " + Params.latitude + ", Longitude: " + Params.longitude);
-                        listener.onLocationReceived(Params.latitude, Params.longitude);
+//                        if ((Params.latitude != location.getLatitude()) || (Params.longitude != location.getLongitude()) || (i==0)) {
+                            Params.latitude = location.getLatitude();
+                            Params.longitude = location.getLongitude();
+                            Log.d("LocationHelper", "Latitude: " + Params.latitude + ", Longitude: " + Params.longitude);
+//                            listener.onLocationReceived(Params.latitude, Params.longitude);
+                            i++;
+//                        }
                     }
+                }
+                if (i>0) {
+                    listener.onLocationReceived(Params.latitude, Params.longitude);
                 }
             }
         };

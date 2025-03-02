@@ -13,40 +13,40 @@ import java.io.IOException;
 public class HttpHelper {
     private OkHttpClient client = new OkHttpClient();
     private Handler handler = new Handler(Looper.getMainLooper()); // Используем главный поток для задержки
-    private int currentRetry;
+    //private int currentRetry;
 
     public void executeRequest(final String url,  final Callback callback) {
-        executeRequestInternal(url, 0, callback);
+        executeRequestInternal(url,  callback);
     }
 
-    private void executeRequestInternal(final String url, final int currentRetry, final Callback callback) {
+    private void executeRequestInternal(final String url, final Callback callback) {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        Params.httpRetries = currentRetry;
+        //Params.httpRetries = currentRetry;
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                if ( Params.httpRetries <= Params.httpMaxRetries) {
+  //              if ( Params.httpRetries <= Params.httpMaxRetries) {
                     // Если не достигнуто максимальное количество попыток - повторяем запрос через заданный интервал
-                    handler.postDelayed(() -> executeRequestInternal(url,  Params.httpRetries + 1, callback), Params.httpDelayInSeconds * 1000L);
-                } else {
+//                    handler.postDelayed(() -> executeRequestInternal(url,  Params.httpRetries + 1, callback), Params.httpDelayInSeconds * 1000L);
+//                } else {
                     // Обработка окончательной ошибки
                     callback.onFailure(call, e);
-                }
+  //              }
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    if ( Params.httpRetries <= Params.httpMaxRetries) {
+//                    if ( Params.httpRetries <= Params.httpMaxRetries) {
                         // Если ответ не успешен, повторяем запрос через заданный интервал
-                        handler.postDelayed(() -> executeRequestInternal(url,  Params.httpRetries + 1, callback), Params.httpDelayInSeconds * 1000L);
-                    } else {
+//                        handler.postDelayed(() -> executeRequestInternal(url,  Params.httpRetries + 1, callback), Params.httpDelayInSeconds * 1000L);
+//                    } else {
                         // Обработка окончательной ошибки
                         callback.onFailure(call, new IOException("Unexpected code " + response));
-                    }
+//                    }
                 } else {
                     // Обработка успешного ответа
                     callback.onResponse(call, response);
