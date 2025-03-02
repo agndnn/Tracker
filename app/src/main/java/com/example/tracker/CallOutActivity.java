@@ -144,7 +144,7 @@ public class CallOutActivity extends Activity{
         callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + selectePhone));
+                Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "+7"+selectePhone));
                 startActivity(callIntent);
             }
         });
