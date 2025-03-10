@@ -17,6 +17,7 @@ public class HttpClient {
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
@@ -26,6 +27,7 @@ public class HttpClient {
     public static String sendGetRequest(String url) throws Exception {
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
                 .build();
 
         try (Response response = client.newCall(request).execute()) {

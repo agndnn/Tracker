@@ -14,7 +14,7 @@ public final class Params {
     static  String IsAutoRun ="Y";
 
     static  String homeUrl;
-    private  static  String homeUrlDefault = "https://site-www.ru/maptrack";
+    private  static  String homeUrlDefault = "http://f99600w0.beget.tech/tracker";
 //    static  String addPointUrl = homeUrl+"/add_point.php";
     static  String userCode;
     static  String userPhone;
