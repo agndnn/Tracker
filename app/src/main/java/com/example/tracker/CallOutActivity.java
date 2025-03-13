@@ -62,7 +62,7 @@ public class CallOutActivity extends Activity{
                                 try {
                                     String url=Params.getCoordFromUrl(code,selectePhone);
                                     Log.debug("url="+url);
-                                    String response = HttpClient.sendGetRequest(url);
+                                    String response = (new HttpHelper()).sendGetRequest(url); //HttpClient.sendGetRequest(url);
                                     runOnUiThread(() -> {
                                         Log.debug("response=" + response);
                                         // Получаем значение поля "errc"
