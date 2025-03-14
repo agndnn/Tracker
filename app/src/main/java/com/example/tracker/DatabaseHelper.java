@@ -17,13 +17,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_LATITUDE = "latitude";
     private static final String COLUMN_LONGITUDE = "longitude";
-    private static final String COLUMN_IS_FOREGROUND = "isForeground";
-    private static final String COLUMN_IS_AUTO_RUN = "isAutoRun";
-    private static final String COLUMN_HOME_URL = "homeUrl";
     private static final String COLUMN_USER_CODE = "userCode";
     private static final String COLUMN_USER_PHONE = "userPhone";
     private static final String COLUMN_USER_NAME = "userName";
-    private static final String COLUMN_API_KEY = "apiKey";
 
     // Таблица для пользователей
     private static final String USERS_TABLE_NAME = "users";
@@ -36,18 +32,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         // Создание таблицы параметров
         String createParamsTable = "CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_LATITUDE + " REAL, " +
                 COLUMN_LONGITUDE + " REAL, " +
-                COLUMN_IS_FOREGROUND + " TEXT, " +
-                COLUMN_IS_AUTO_RUN + " TEXT, " +
-                COLUMN_HOME_URL + " TEXT, " +
                 COLUMN_USER_CODE + " TEXT, " +
                 COLUMN_USER_PHONE + " TEXT, " +
-                COLUMN_USER_NAME + " TEXT, " +
-                COLUMN_API_KEY + " TEXT)";
+                COLUMN_USER_NAME + " TEXT)";
         db.execSQL(createParamsTable);
 
         // Создание таблицы пользователей
@@ -71,13 +64,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_NAME, null, null);
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_IS_FOREGROUND, Params.IsForeground);
-        values.put(COLUMN_IS_AUTO_RUN, Params.IsAutoRun);
-        values.put(COLUMN_HOME_URL, Params.homeUrl);
         values.put(COLUMN_USER_CODE, Params.userCode);
         values.put(COLUMN_USER_PHONE, Params.userPhone);
         values.put(COLUMN_USER_NAME, Params.userName);
-        values.put(COLUMN_API_KEY, Params.apiKey);
 
         db.insert(TABLE_NAME, null, values);
 
@@ -97,29 +86,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    //@SuppressLint("Range")
     @SuppressLint("Range")
     public void getParams() {
-       // Params params = new Params();
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
-//            params.latitude = cursor.getDouble(cursor.getColumnIndex(COLUMN_LATITUDE));
-//            params.longitude = cursor.getDouble(cursor.getColumnIndex(COLUMN_LONGITUDE));
-            Params.IsForeground = cursor.getString(cursor.getColumnIndex(COLUMN_IS_FOREGROUND));
-            Params.IsAutoRun = cursor.getString(cursor.getColumnIndex(COLUMN_IS_AUTO_RUN));
-            Params.homeUrl = cursor.getString(cursor.getColumnIndex(COLUMN_HOME_URL));
             Params.userCode = cursor.getString(cursor.getColumnIndex(COLUMN_USER_CODE));
             Params.userPhone = cursor.getString(cursor.getColumnIndex(COLUMN_USER_PHONE));
             Params.userName = cursor.getString(cursor.getColumnIndex(COLUMN_USER_NAME));
-            Params.apiKey = cursor.getString(cursor.getColumnIndex(COLUMN_API_KEY));
             cursor.close();
         }
 
 
-        //Params.usersOut.add(new User("ag234678","79585487061"));
-        //Params.usersOut.add(new User("sv23457","79081642616"));
         Params.usersOut.clear();
         cursor = db.query(USERS_TABLE_NAME, null, null, null, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {

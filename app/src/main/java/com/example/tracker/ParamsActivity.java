@@ -30,16 +30,9 @@ import okhttp3.Response;
 public class ParamsActivity extends AppCompatActivity {
 
     DatabaseHelper databaseHelper;
-
-    //EditText latitudeEditText;
-    //EditText longitudeEditText;
-    CheckBox isForegroundCheckBox;
-    CheckBox isAutoRunCheckBox;
-    EditText homeUrlEditText;
     EditText userCodeEditText;
     EditText userPhoneEditText;
     EditText userNameEditText;
-    EditText apiKeyEditText;
 
     private UserAdapter userAdapter;
 
@@ -52,13 +45,9 @@ public class ParamsActivity extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
 
-        isForegroundCheckBox = findViewById(R.id.is_foreground_checkbox);
-        isAutoRunCheckBox = findViewById(R.id.is_auto_run_checkbox);
-        homeUrlEditText = findViewById(R.id.home_url_edit_text);
         userCodeEditText = findViewById(R.id.user_code_edit_text);
         userPhoneEditText = findViewById(R.id.user_phone_edit_text);
         userNameEditText = findViewById(R.id.user_name_edit_text);
-        apiKeyEditText = findViewById(R.id.api_key_edit_text);
         Button saveButton = findViewById(R.id.save_button);
         Button registerButton = findViewById(R.id.register_button);
 
@@ -101,25 +90,16 @@ public class ParamsActivity extends AppCompatActivity {
     }
 
     private void loadParams() {
-        //Params params = databaseHelper.getParams();
-        isForegroundCheckBox.setChecked(Params.IsForeground.equals("Y"));;
-        isAutoRunCheckBox.setChecked(Params.IsAutoRun.equals("Y"));
-        homeUrlEditText.setText(Params.homeUrl);
         userCodeEditText.setText(Params.userCode);
         userPhoneEditText.setText(Params.userPhone);
         userNameEditText.setText(Params.userName);
-        apiKeyEditText.setText(Params.apiKey);
     }
 
     private void saveParams() {
         //Params params = new Params();
-        Params.IsForeground = isForegroundCheckBox.isChecked() ? "Y" : "N";
-        Params.IsAutoRun = isAutoRunCheckBox.isChecked() ? "Y" : "N";
-        Params.homeUrl = homeUrlEditText.getText().toString();
         Params.userCode = userCodeEditText.getText().toString();
         Params.userPhone = userPhoneEditText.getText().toString();
         Params.userName = userNameEditText.getText().toString();
-        Params.apiKey = apiKeyEditText.getText().toString();
 
         // Вставляем или обновляем параметры в базе данных
         databaseHelper.insertParams();
@@ -176,31 +156,4 @@ public class ParamsActivity extends AppCompatActivity {
             }
         });
     }
-
-    // Метод для показа диалога добавления пользователя
-    /*
-    private void showAddUserDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View addView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_user, null);
-
-        EditText editUserCode = addView.findViewById(R.id.edit_user_code);
-        EditText editPhoneNumber = addView.findViewById(R.id.edit_phone_number);
-
-        builder.setTitle(R.string.add_user_header)
-                .setView(addView)
-                .setPositiveButton("Add", (dialog, which) -> {
-                    String newUserId = editUserCode.getText().toString();
-                    String newPhoneNumber = editPhoneNumber.getText().toString();
-
-                    // Создаем нового пользователя и добавляем его в список
-                    User newUser = new User(newUserId, newPhoneNumber);
-                    usersOut.add(newUser);
-                    userAdapter.notifyItemInserted(usersOut.size() - 1); // Уведомляем адаптер о добавлении
-                })
-                .setNegativeButton("Cancel", null);
-
-        builder.create().show();
-    }
-
-     */
 }

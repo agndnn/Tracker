@@ -37,22 +37,11 @@ import java.util.List;
 @RequiresApi(api = Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 public class MainActivity extends AppCompatActivity {
 
+    Context context;
     private static boolean isMapKitInitialized = false;
     DatabaseHelper databaseHelper;
-    private Button button;
-    private Button buttonTest;
-    private Button buttonCallOut;
-    private Button buttonParams;
-   // private Coord coord;
     private TextView textView;
-    Context context;
-    //private MapView mapView;
-   // protected static final String par_latitude = "latitude";
-    //protected static final String par_longitude = "longitude";
-    //private static final int REQUEST_LOCATION_PERMISSION = 1;
 
-//    private double latitude;
-//    private double longitude;
     String[] permissions = {
                            Manifest.permission.ACCESS_FINE_LOCATION,
                            Manifest.permission.READ_PHONE_STATE,
@@ -63,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
                            Manifest.permission.READ_CONTACTS,
                            Manifest.permission.FOREGROUND_SERVICE_LOCATION
     };
-    int requestCode = 123; // Любое число, которое вы выберете для
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,28 +75,30 @@ public class MainActivity extends AppCompatActivity {
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE_LOCATION) != PackageManager.PERMISSION_GRANTED
         ) {
-            requestPermissions(permissions, 123);
+            requestPermissions(permissions, 200);
         }
 
-        //coord =new Coord(this);
+        //делаем уведомление злоебучее
         Intent serviceLocationIntent = new Intent(this, LocationService.class);
         startService(serviceLocationIntent);
         Log.debug("Запущен сервис геолокации.");
 
+
+        Intent ReceiverIntent = new Intent(this, CallReceiver.class);
+        startService(ReceiverIntent);
+        Log.debug("Запущен листsенер звонка.");
+
         setContentView(R.layout.activity_main);
-       // mapView = findViewById(R.id.mapView);
-        button = findViewById(R.id.button1);
+        Button button = findViewById(R.id.button1);
         textView = findViewById(R.id.textView);
-        buttonTest=findViewById(R.id.buttonTest);
-        buttonCallOut=findViewById(R.id.buttonCallOut);
-        buttonParams=findViewById(R.id.buttonParams);
+        Button buttonTest = findViewById(R.id.buttonTest);
+        Button buttonCallOut = findViewById(R.id.buttonCallOut);
+        Button buttonParams = findViewById(R.id.buttonParams);
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //   textView.setText("добрый");
-                //getCurrentLocation();
                 openMapActivity();
             }
         });
@@ -122,28 +114,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onLocationReceived(double latitude, double longitude) {
                         Log.debug( "Received Location: Latitude: " + latitude + ", Longitude: " + longitude);
-                        //TextView textView = ((MainActivity) context).findViewById(R.id.textView);
                         textView.setText("Широта: " + Params.latitude + " Долгота: " +Params.longitude);
+
                         // Здесь вы можете использовать полученные координаты
                         locationHelper.stopLocationUpdates();
-
                     }
                 });
-/*
-                new Thread(() -> {
-                    try {
-                        String response = HttpClient.sendGetRequest(Params.getAddPointUrl());
-                        runOnUiThread(() -> {
-                            textView.setText("response="+response );
-                            // Обновите UI с полученными данными
-                        });
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }).start();
-
- */
             }
         });
 
@@ -151,8 +127,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //   textView.setText("добрый");
-                //getCurrentLocation();
                 openCallOutActivity();
             }
         });
@@ -164,31 +138,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Intent serviceIntent = new Intent(this, CallReceiver.class);
-        startService(serviceIntent);
-
-
-
-    //    startForegroundService(serviceIntent);
-    }
-/*
-    @SuppressLint({"SetTextI18n", "MissingPermission"})
-    private void getCurrentLocation() {
-    //    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, location -> {
-                        if (location != null) {
-                            // Местоположение найдено, обрабатываем
-                            textView.setText("Широта1: " + location.getLatitude()+ " Долгота1: " + location.getLongitude());
-                        }
-                    });
-
-  //      } else {
-     //       requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
-     //   }
 
     }
-*/
+
     private void openMapActivity() {
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra("key_latitude", Params.latitude);
@@ -213,31 +165,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 123:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[2] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[3] == PackageManager.PERMISSION_GRANTED
-                ) {
-                    // Разрешение предоставлено, выполняем действия с местоположением
-                    //handleLocationPermissionGranted();
-                } else {
-                    // Разрешение не предоставлено
-                    //handleLocationPermissionDenied();
-                    Toast.makeText(MainActivity.this, "Не все разрешения предоставлены.", Toast.LENGTH_SHORT).show();
-                    finishAffinity();
-                }
-                break;
+        if (!(requestCode == 200 && grantResults.length > 0
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED
+            && grantResults[1] == PackageManager.PERMISSION_GRANTED
+            && grantResults[2] == PackageManager.PERMISSION_GRANTED
+            && grantResults[3] == PackageManager.PERMISSION_GRANTED)) {
+
+            Toast.makeText(MainActivity.this, "Не все разрешения предоставлены.", Toast.LENGTH_SHORT).show();
+            Log.debug("разрешения не предоставлены");
+            finishAffinity();
         }
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //if (requestingLocationUpdates) {
-        //    coord.startLocationUpdates();
-        //}
-    }
-
 }

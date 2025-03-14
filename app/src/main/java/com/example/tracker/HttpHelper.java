@@ -11,44 +11,26 @@ import okhttp3.Response;
 import java.io.IOException;
 
 public class HttpHelper {
-    private OkHttpClient client = new OkHttpClient();
-    private Handler handler = new Handler(Looper.getMainLooper()); // Используем главный поток для задержки
-    //private int currentRetry;
+    private final OkHttpClient client = new OkHttpClient();
 
-    public void executeRequest(final String url,  final Callback callback) {
-        executeRequestInternal(url,  callback);
-    }
-
-    private void executeRequestInternal(final String url, final Callback callback) {
+    public void executeRequest(final String url, final Callback callback) {
 
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
                 .build();
-        //Params.httpRetries = currentRetry;
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-  //              if ( Params.httpRetries <= Params.httpMaxRetries) {
-                    // Если не достигнуто максимальное количество попыток - повторяем запрос через заданный интервал
-//                    handler.postDelayed(() -> executeRequestInternal(url,  Params.httpRetries + 1, callback), Params.httpDelayInSeconds * 1000L);
-//                } else {
-                    // Обработка окончательной ошибки
                     callback.onFailure(call, e);
-  //              }
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-//                    if ( Params.httpRetries <= Params.httpMaxRetries) {
-                        // Если ответ не успешен, повторяем запрос через заданный интервал
-//                        handler.postDelayed(() -> executeRequestInternal(url,  Params.httpRetries + 1, callback), Params.httpDelayInSeconds * 1000L);
-//                    } else {
                         // Обработка окончательной ошибки
-                        callback.onFailure(call, new IOException("Unexpected code " + response));
-//                    }
+                    callback.onFailure(call, new IOException("Unexpected code " + response));
                 } else {
                     // Обработка успешного ответа
                     callback.onResponse(call, response);
@@ -56,4 +38,21 @@ public class HttpHelper {
             }
         });
     }
+
+    public String sendGetRequest(String url) throws Exception {
+        Request request = getRequest(url) ;
+
+        try (Response response = client.newCall(request).execute()) {
+            return response.body().string();
+        }
+    }
+
+
+    private Request getRequest(String url) {
+        return new Request.Builder()
+                .url(url)
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+                .build();
+    }
+
 }
