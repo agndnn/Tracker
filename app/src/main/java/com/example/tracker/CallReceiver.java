@@ -17,7 +17,7 @@ import okhttp3.Response;
 
 
 public class CallReceiver extends BroadcastReceiver {
-    private static boolean incomingCall = false;
+    //private static boolean incomingCall = false;
     private static final Notification CHANNEL_ID = null;
     private TelephonyManager telephonyManager;
     //private MyPhoneStateListener phoneStateListener;
@@ -33,43 +33,39 @@ public class CallReceiver extends BroadcastReceiver {
         Log.debug("onReceive = "+intent.getAction());
         if (intent.getAction().equals("android.intent.action.PHONE_STATE")) {
             String phoneState = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+/*
             if (phoneState.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 //Трубка не поднята, телефон звонит
-
-                //new Thread(() -> {
-                    //try {
                         String phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
                         incomingCall = true;
                         Log.debug("phoneNumber1 = "+phoneNumber);
                         if (phoneNumber!=null)
                             handleIncomingCall(context,phoneNumber);
 
-                   // } catch (Exception e) {
-                     //   e.printStackTrace();
-                   // }
-              //  }).start();
 
 
 
-            } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+            } else
+            if (phoneState.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                 //Телефон находится в режиме звонка (набор номера при исходящем звонке / разговор)
                 if (incomingCall) {
                     Log.debug("Close window.");
                     incomingCall = false;
                 }
-            } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+            } else */
+            if (phoneState.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                 //Телефон находится в ждущем режиме - это событие наступает по окончанию разговора
                 //или в ситуации "отказался поднимать трубку и сбросил звонок".
-                if (incomingCall) {
-                    incomingCall = false;
-                }
+//                if (incomingCall) {
+//                    incomingCall = false;
+//                }
                 sendCoord(context);
 
             }
         }
     }
 
-
+/*
     private void handleIncomingCall(Context context, String incomingNumber) {
         // Вызываем свой метод при поступлении звонка
         // Например, можно запустить уведомление или выполнить какие-то действия
@@ -78,17 +74,8 @@ public class CallReceiver extends BroadcastReceiver {
         //LocationTask locationTask = new LocationTask(context);
         //locationTask.doInBackground();
         //locationTask.execute();
-        /*
-        Data inputData = new Data.Builder()
-                .putString("url", Params.getAddPointUrl())
-                .build();
-        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(HttpWorker.class)
-                .setInputData(inputData)
-                .build();
-        WorkManager.getInstance(context).enqueue(workRequest);
-         */
     }
-
+*/
     public void sendCoord(Context context){
         //Params.coordRequestTries = Params.coordRequestTriesDefault; //нужно отправить координаты
        // Log.debug("Установлен флаг передачи координат Params.coordRequestTries="+Params.coordRequestTries );

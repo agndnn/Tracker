@@ -12,7 +12,7 @@ public class BootReceiver extends BroadcastReceiver {
             databaseHelper.getParams();
             if (Params.IsAutoRun.equals("Y")) {
                 // Запускаем LocationService после перезагрузки
-                Intent serviceIntent = new Intent(context, LocationService.class);
+                Intent serviceIntent = new Intent(context, TrackerService.class);
                 context.startForegroundService(serviceIntent);
             }
         }
