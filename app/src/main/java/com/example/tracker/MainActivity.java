@@ -1,5 +1,8 @@
 package com.example.tracker;
 
+import static com.example.tracker.Params.ReceiverIntent;
+import static com.example.tracker.Params.usersOut;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,14 +46,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
 
     String[] permissions = {
-                           Manifest.permission.ACCESS_FINE_LOCATION,
-                           Manifest.permission.READ_PHONE_STATE,
-                           Manifest.permission.CALL_PHONE,
-                           Manifest.permission.RECEIVE_BOOT_COMPLETED,
-                           Manifest.permission.READ_PHONE_NUMBERS,
-                           Manifest.permission.READ_CALL_LOG,
-                           Manifest.permission.READ_CONTACTS,
-                           Manifest.permission.FOREGROUND_SERVICE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.RECEIVE_BOOT_COMPLETED,
+            Manifest.permission.READ_PHONE_NUMBERS,
+            Manifest.permission.READ_CALL_LOG,
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.FOREGROUND_SERVICE_LOCATION
     };
 
 
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         if (!isMapKitInitialized) {
             MapKitFactory.setApiKey(Params.getApiKey());
             MapKitFactory.initialize(this);
+            Params.mapkit = MapKitFactory.getInstance();
             isMapKitInitialized = true;
         }
 
@@ -83,8 +87,12 @@ public class MainActivity extends AppCompatActivity {
         startService(serviceLocationIntent);
         Log.debug("Запущен сервис геолокации.");
 
+        ReceiverIntent = new Intent(this, CallReceiver.class);
 
-        Intent ReceiverIntent = new Intent(this, CallReceiver.class);
+        //Bundle bundle = new Bundle();
+
+
+        //ReceiverIntent.putExtra("numbers", usersOut.toArray());
         startService(ReceiverIntent);
         Log.debug("Запущен листsенер звонка.");
 
@@ -113,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void onLocationReceived(double latitude, double longitude) {
-                        Log.debug( "Received Location: Latitude: " + latitude + ", Longitude: " + longitude);
-                        textView.setText("Широта: " + Params.latitude + " Долгота: " +Params.longitude);
+                        Log.debug("Received Location: Latitude: " + latitude + ", Longitude: " + longitude);
+                        textView.setText("Широта: " + Params.latitude + " Долгота: " + Params.longitude);
 
                         // Здесь вы можете использовать полученные координаты
                         locationHelper.stopLocationUpdates();
@@ -137,14 +145,10 @@ public class MainActivity extends AppCompatActivity {
                 openParamsActivity();
             }
         });
-
-
     }
 
     private void openMapActivity() {
         Intent intent = new Intent(this, MapActivity.class);
-        intent.putExtra("key_latitude", Params.latitude);
-        intent.putExtra("key_longitude", Params.longitude);
         startActivity(intent);
     }
 
@@ -166,10 +170,10 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (!(requestCode == 200 && grantResults.length > 0
-            && grantResults[0] == PackageManager.PERMISSION_GRANTED
-            && grantResults[1] == PackageManager.PERMISSION_GRANTED
-            && grantResults[2] == PackageManager.PERMISSION_GRANTED
-            && grantResults[3] == PackageManager.PERMISSION_GRANTED)) {
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                && grantResults[2] == PackageManager.PERMISSION_GRANTED
+                && grantResults[3] == PackageManager.PERMISSION_GRANTED)) {
 
             Toast.makeText(MainActivity.this, "Не все разрешения предоставлены.", Toast.LENGTH_SHORT).show();
             Log.debug("разрешения не предоставлены");

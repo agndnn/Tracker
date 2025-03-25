@@ -7,6 +7,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "params.db";
@@ -15,8 +18,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Таблица для параметров
     private static final String TABLE_NAME = "params";
     private static final String COLUMN_ID = "id";
-    private static final String COLUMN_LATITUDE = "latitude";
-    private static final String COLUMN_LONGITUDE = "longitude";
     private static final String COLUMN_USER_CODE = "userCode";
     private static final String COLUMN_USER_PHONE = "userPhone";
     private static final String COLUMN_USER_NAME = "userName";
@@ -36,8 +37,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Создание таблицы параметров
         String createParamsTable = "CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_LATITUDE + " REAL, " +
-                COLUMN_LONGITUDE + " REAL, " +
                 COLUMN_USER_CODE + " TEXT, " +
                 COLUMN_USER_PHONE + " TEXT, " +
                 COLUMN_USER_NAME + " TEXT)";
@@ -57,6 +56,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public ArrayList<String> getNumberList(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.query(USERS_TABLE_NAME, null, null, null, null, null, null);
+        ArrayList <String> phones = new ArrayList<>();
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                phones.add(cursor.getString(1));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+
+        return phones;
+    }
     public void insertParams() {
         SQLiteDatabase db = this.getWritableDatabase();
 

@@ -19,7 +19,6 @@ public class CallOutActivity extends Activity{
 
     private ListView listView;
     private TextView tvEmpty;
-    private Button buttonToMap;
     private Button callButton;
 
     private double latitude;
@@ -30,12 +29,9 @@ public class CallOutActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call_out);
-
         listView = findViewById(R.id.list_call_out);
         tvEmpty = findViewById(R.id.tv_empty);
-        buttonToMap = findViewById(R.id.button_call_out_tomap);
         callButton = findViewById(R.id.callButton);
-        buttonToMap.setEnabled(false);
         callButton.setEnabled(false);
 
         // Получаем данные из Intent
@@ -55,7 +51,6 @@ public class CallOutActivity extends Activity{
                     callButton.setEnabled(true);
                     String code = Params.getUserCodeByPhone(selectePhone);
                     Log.debug("code="+code+", selectePhone="+selectePhone);
-                    buttonToMap.setEnabled(false);
                     if (code!=null ) {
                         if ((callLogs.get(position).getLatitude() == null) && (callLogs.get(position).getErrCode() == 0)) {
                             new Thread(() -> {
@@ -67,6 +62,7 @@ public class CallOutActivity extends Activity{
                                         Log.debug("response=" + response);
                                         // Получаем значение поля "errc"
                                         try {
+                                            //json штука
                                             JSONObject jsonObject = new JSONObject(response);
                                             int errc = jsonObject.getInt("errc");
                                             if (errc == 0) {
@@ -80,7 +76,6 @@ public class CallOutActivity extends Activity{
 
 
                                                 callLogs.set(position, callLogs.get(position).addCoord(latitude, longitude, coorDate));
-                                                buttonToMap.setEnabled(true);
                                             } else {
                                                 String errm = jsonObject.getString("errm");
                                                 Log.debug("errm=" + errm);
@@ -99,9 +94,6 @@ public class CallOutActivity extends Activity{
                                     e.printStackTrace();
                                 }
                             }).start();
-                        } else if (callLogs.get(position).getLatitude() != null) {
-                            buttonToMap.setEnabled(true);
-
                         }
                     }
                 }
@@ -123,15 +115,6 @@ public class CallOutActivity extends Activity{
         } else {
             tvEmpty.setVisibility(View.VISIBLE);
         }
-
-        // Устанавливаем обработчик нажатия на кнопку
-        buttonToMap.setOnClickListener(v -> {
-
-            Intent intent = new Intent(this, MapActivity.class);
-            intent.putExtra("key_latitude", latitude);
-            intent.putExtra("key_longitude", longitude);
-            startActivity(intent);
-        });
 
         Button backButton = findViewById(R.id.btBack2);
         backButton.setOnClickListener(new View.OnClickListener() {

@@ -17,7 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 //import com.google.android.ads.mediationtestsuite.viewmodels.HeaderViewHolder;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -59,15 +64,8 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             userViewHolder.userCodeTextView.setText(user.getCode());
             userViewHolder.phoneNumberTextView.setText(user.getPhone());
             holder.itemView.setOnClickListener(v -> showEditDialog(user, position));
-
-            // Устанавливаем обработчик нажатия на кнопку удаления
             ((UserViewHolder) holder).deleteButton.setOnClickListener(v -> showDeleteDialog(position));
-//            ((UserViewHolder) holder).deleteButton.setOnLongClickListener(v -> {
-//                showDeleteDialog(position-1);
-//                return true; // Возвращаем true, чтобы предотвратить дальнейшее обработку события
-//            });
-            // Устанавливаем обработчик нажатия на кнопку удаления для этого пользователя
-  //          ((UserViewHolder) holder).deleteButton.setOnClickListener(v -> showDeleteDialog(position-1));
+
 
         }
     }
@@ -136,11 +134,40 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     String newUserId = editUserCode.getText().toString();
                     String newPhoneNumber = editPhoneNumber.getText().toString();
 
-                    // Создаем нового пользователя и добавляем его в список
-                    User newUser = new User(newUserId, newPhoneNumber);
-                    usersOut.add(newUser);
-                    //userAdapter.notifyItemInserted(usersOut.size() - 1); // Уведомляем адаптер о добавлении
-                    notifyDataSetChanged();
+                    HttpHelper httpHelper = new HttpHelper();
+                    String url = Params.getValidationRes(newUserId, newPhoneNumber);
+
+                    final int[] stat = {3};
+
+                    httpHelper.executeRequest(url, new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+
+                            Log.debug( "Не удалось отправить запрос ValidCheck");
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            // Обработать успешный ответ
+                            if (response.isSuccessful()) {
+                                String responseData = response.body().string();
+
+                                if (responseData.contains("1")){
+                                    stat[0] = 1;
+                                } else{
+                                    stat[0] = 2;
+                                }
+                            }
+                        }
+                    });
+
+                    while(stat[0] == 3){ }
+
+                    if (stat[0] == 1){
+                        User newUser = new User(newUserId, newPhoneNumber);
+                        usersOut.add(newUser);
+                        notifyDataSetChanged();
+                    }
                 })
                 .setNegativeButton("Cancel", null);
 

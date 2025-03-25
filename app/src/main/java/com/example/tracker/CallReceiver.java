@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.telephony.TelephonyManager;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -19,8 +21,8 @@ import okhttp3.Response;
 public class CallReceiver extends BroadcastReceiver {
     private static final int[] DELAYS = {20000, 30000, 40000, 60000, 12000, 24000}; // 20с, 30с, 60с, 2мин, 4 мин - повторы отправки при неудаче
     private int currentAttempt = 0;
-    private boolean flg = true;
     private Handler handler = new Handler();
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -29,22 +31,29 @@ public class CallReceiver extends BroadcastReceiver {
             String phoneState = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
 
             if (phoneState.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-                //Телефон находится в ждущем режиме - это событие наступает по окончанию разговора
-                //или в ситуации "отказался поднимать трубку и сбросил звонок".
 
-                if (flg) {
-                    flg = false;
+                String incoming_phone = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
+                DatabaseHelper databaseHelper = new DatabaseHelper(context);
+                ArrayList<String> users = databaseHelper.getNumberList();
+
+                boolean flg = false;
+                if (incoming_phone != null) {
+
+                    Log.debug("TelBook: " +users.toString());
+                    for (String el : users) {
+                        if (Objects.equals(el, incoming_phone.substring(incoming_phone.length() - 10))) {
                             flg = true;
+                            break;
                         }
-                    }, 2000); // 2 сек
+                    }
 
-                    Log.debug("Call recieved");
-                    sendCoord(context);
+                    if (flg) {
+                        Log.debug("Call recieved");
+                        sendCoord(context);
+                    }
                 }
+
             }
         }
     }

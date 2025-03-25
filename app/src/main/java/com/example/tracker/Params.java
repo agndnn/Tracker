@@ -1,5 +1,10 @@
 package com.example.tracker;
 
+import android.content.Intent;
+
+import com.yandex.mapkit.MapKit;
+import com.yandex.mapkit.location.LocationManager;
+
 import java.util.ArrayList;
 
 public final class Params {
@@ -9,6 +14,8 @@ public final class Params {
     static  String userCode;
     static  String userPhone;
     static  String userName;
+    static Intent ReceiverIntent;
+    static MapKit mapkit;
     private static  String apiKeyDefault = "a4304081-4a62-4707-9204-65de6edc6562";
 
     static ArrayList<User> usersOut = new ArrayList<>();
@@ -25,6 +32,11 @@ public final class Params {
     static  String getCoordFromUrl(String code, String phone){
         return homeUrlDefault
                  +"/get_point.php?code="+code+"&is_log=1&phone="+phone.substring(phone.length()-10);
+    }
+
+    static String getValidationRes(String code, String phone){
+        return homeUrlDefault
+                +"/valid_check.php?code="+code+"&is_log=1&phone="+phone;
     }
 
     static  String getRegisterUrl(){
