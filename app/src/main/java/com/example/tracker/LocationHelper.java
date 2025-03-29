@@ -53,7 +53,6 @@ public class LocationHelper {
             }
         };
 
-        // Запуск запросов местоположения
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
     }
 

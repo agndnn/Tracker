@@ -75,9 +75,6 @@ public class HttpHelper {
         }
     }
 
-    //------------------------------------------------------
-    //getRequest
-    //----------------------------------------------------
     private  Request getRequest(String url) {
         return new Request.Builder()
                 .url(url)

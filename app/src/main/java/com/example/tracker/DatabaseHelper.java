@@ -89,7 +89,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values = new ContentValues();
             values.put(COLUMN_CODE, user.getCode());
             values.put(COLUMN_PHONE, user.getPhone());
-
             db.insert(USERS_TABLE_NAME, null, values);
         }
 

@@ -9,78 +9,33 @@ import android.os.Handler;
 import android.telephony.TelephonyManager;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-//import android.widget.Toast;
-
 
 public class CallReceiver extends BroadcastReceiver {
-    //private static boolean incomingCall = false;
-    private static final Notification CHANNEL_ID = null;
-    private TelephonyManager telephonyManager;
-    //private MyPhoneStateListener phoneStateListener;
-  //  double latitude;
-  //  double longitude;
     private static final int[] DELAYS = {20000, 30000, 40000, 60000, 12000, 24000}; // 20с, 30с, 60с, 2мин, 4 мин - повторы отправки при неудаче
     private int currentAttempt = 0;
     private Handler handler = new Handler();
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        //Toast.makeText(context, "ON_Receive_Start", Toast.LENGTH_LONG).show();
         Log.debug("onReceive = "+intent.getAction());
         if (intent.getAction().equals("android.intent.action.PHONE_STATE")) {
             String phoneState = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-/*
-            if (phoneState.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-                //Трубка не поднята, телефон звонит
-                        String phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-                        incomingCall = true;
-                        Log.debug("phoneNumber1 = "+phoneNumber);
-                        if (phoneNumber!=null)
-                            handleIncomingCall(context,phoneNumber);
-
-
-
-
-            } else
-            if (phoneState.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-                //Телефон находится в режиме звонка (набор номера при исходящем звонке / разговор)
-                if (incomingCall) {
-                    Log.debug("Close window.");
-                    incomingCall = false;
-                }
-            } else */
             if (phoneState.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-                //Телефон находится в ждущем режиме - это событие наступает по окончанию разговора
-                //или в ситуации "отказался поднимать трубку и сбросил звонок".
-//                if (incomingCall) {
-//                    incomingCall = false;
-//                }
-                sendCoord(context);
-
+                String phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                Log.debug("phoneNumber="+phoneNumber);
+                if (phoneNumber!=null && Params.isTargetNumber(phoneNumber.substring(phoneNumber.length() - 10))) {
+                    sendCoord(context);
+                }
             }
+
         }
     }
-
-/*
-    private void handleIncomingCall(Context context, String incomingNumber) {
-        // Вызываем свой метод при поступлении звонка
-        // Например, можно запустить уведомление или выполнить какие-то действия
-        //Toast.makeText(context, incomingNumber+ ": "+Params.getCoordTxt(), Toast.LENGTH_LONG).show();
-        final Handler h = new Handler();
-        //LocationTask locationTask = new LocationTask(context);
-        //locationTask.doInBackground();
-        //locationTask.execute();
-    }
-*/
     public void sendCoord(Context context){
-        //Params.coordRequestTries = Params.coordRequestTriesDefault; //нужно отправить координаты
-       // Log.debug("Установлен флаг передачи координат Params.coordRequestTries="+Params.coordRequestTries );
-
-//      if (Params.coordRequestTries>0){
             // Получаем гео-координаты
         LocationHelper locationHelper = new LocationHelper(context);
         locationHelper.getLocation(new LocationHelper.OnLocationReceivedListener() {
@@ -110,7 +65,6 @@ public class CallReceiver extends BroadcastReceiver {
                         } else {
                             Log.debug( "Не удалось отправить запрос после нескольких попыток ("+currentAttempt+")");
                         }
-                       // android.util.Log.e("HTTP_ERROR", "Failed to fetch data", e);
                     }
 
                     @Override
@@ -119,8 +73,7 @@ public class CallReceiver extends BroadcastReceiver {
                         if (response.isSuccessful()) {
                             String responseData = response.body().string();
                             android.util.Log.d("HTTP_RESPONSE", "Координаты успешно отправлены. responseData="+responseData);
-//                        Params.coordRequestTries--;
-                            // stopSelf();
+
                         }
                     }
                 });

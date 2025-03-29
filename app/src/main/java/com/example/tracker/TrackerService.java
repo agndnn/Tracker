@@ -20,11 +20,14 @@ public class TrackerService extends Service {
     @SuppressLint("ForegroundServiceType")
     @Override
     public void onCreate() {
-        Log.d("LocationService", "LocationService srated.");
-        super.onCreate();
-        createNotificationChannel(); // Создание канала уведомлений для API 26+
-        startForeground(1, getNotification()); // Запуск сервиса в фоновом режиме
-        //context = getApplicationContext();
+        if (Params.IsForeground.equals("Y")) {
+            Log.d("LocationService", "LocationService srated.");
+            super.onCreate();
+            createNotificationChannel(); // Создание канала уведомлений для API 26+
+            startForeground(1, getNotification()); // Запуск сервиса в фоновом режиме
+            //context = getApplicationContext();
+        }
+        else {return;}
 
     }
 
@@ -49,7 +52,6 @@ public class TrackerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-     //   fusedLocationClient.removeLocationUpdates(locationCallback);
     }
 
     @NonNull

@@ -98,7 +98,6 @@ public class CallLogsManager {
                     if( number.length() >= 10 ) {
                         Log.debug("номер=" + number);
                         for (User user : users) {
-//                    if (number.replace("+", "").equals(user.getPhone().replace("+", ""))) {
                             if (number.substring(number.length() - 10).equals (user.getPhone().substring(user.getPhone().length() - 10))) {
                                 numberToNameMap.put(number.substring(number.length() - 10), name);
                             }
