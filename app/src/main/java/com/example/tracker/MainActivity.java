@@ -82,18 +82,17 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(permissions, 200);
         }
 
-        //делаем уведомление злоебучее
+
         Intent serviceLocationIntent = new Intent(this, LocationService.class);
         startService(serviceLocationIntent);
         Log.debug("Запущен сервис геолокации.");
 
         ReceiverIntent = new Intent(this, CallReceiver.class);
-
-        //Bundle bundle = new Bundle();
-
-
-        //ReceiverIntent.putExtra("numbers", usersOut.toArray());
         startService(ReceiverIntent);
+
+        //Intent BootIntent = new Intent(this, BootReceiver.class);
+        //startActivity(BootIntent);
+
         Log.debug("Запущен листsенер звонка.");
 
         setContentView(R.layout.activity_main);
