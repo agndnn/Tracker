@@ -22,6 +22,22 @@
         >
 
         <Button
+            android:id="@+id/button_CloseWarning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:backgroundTint="@color/my_gray"
+            android:text="Я дал разрешение" />
+
+        <TextView
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="ВАМ НЕОБХОДИМО ДАТЬ РАЗРЕШЕНИЕ: Настройки->Приложения->Разрешения->Автозапуск в фоновом режиме->Tracker"
+            android:backgroundTint="@color/black"
+        />
+
+        <Button
             android:id="@+id/buttonCallOut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

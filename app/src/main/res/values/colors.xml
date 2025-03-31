@@ -7,4 +7,10 @@
     <color name="light_blue_A200">#FF40C4FF</color>
     <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
+    <color name="my_button_color">#FF0000</color>  <!-- Красный цвет -->
+    <color name="my_button_color_pressed">#AA0000</color> <!-- Более темный красный для нажатия -->
+    <color name="my_gray">#808080</color>  <!-- Средний серый -->
+    <color name="SlateGray">#708090</color>  <!-- Темно-серый -->
+    <color name="Azure">#F0FFFF</color> <!-- Светло-серый -->
+
 </resources>

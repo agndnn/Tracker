@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonTest;
     private Button buttonCallOut;
     private Button buttonParams;
+
+    private int clickCount = 0;
    // private Coord coord;
     private TextView textView;
     Context context;
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         databaseHelper.getParams();
         context = this;
 
+
         if (!isMapKitInitialized) {
             MapKitFactory.setApiKey(Params.getApiKey());
             MapKitFactory.initialize(this);
@@ -81,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(permissions, 123);
         }
 
+
         //coord =new Coord(this);
         Intent serviceLocationIntent = new Intent(this, TrackerService.class);
         startService(serviceLocationIntent);
@@ -89,10 +94,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
        // mapView = findViewById(R.id.mapView);
         button = findViewById(R.id.button1);
+        button.setEnabled(false);
         textView = findViewById(R.id.textView);
         buttonTest=findViewById(R.id.buttonTest);
+        buttonTest.setEnabled(false);
         buttonCallOut=findViewById(R.id.buttonCallOut);
+        buttonCallOut.setEnabled(false);
         buttonParams=findViewById(R.id.buttonParams);
+        buttonParams.setEnabled(false);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +113,33 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        TextView TextView = findViewById(R.id.editText);
+        Button button2 = findViewById(R.id.button_CloseWarning);
+        Button finalButton = button2;
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (TextView.getVisibility() == View.VISIBLE) {
+                    TextView.setVisibility(View.GONE);
+                    finalButton.setText("Как дать разрешение?");
+                    buttonParams.setEnabled(true);
+                    buttonCallOut.setEnabled(true);
+                    buttonTest.setEnabled(true);
+                    button.setEnabled(true);
+                } else {
+                    TextView.setVisibility(View.VISIBLE);
+                    finalButton.setText("Я дал разрешение");
+                    buttonParams.setEnabled(true);
+                    buttonCallOut.setEnabled(true);
+                    buttonTest.setEnabled(true);
+                    button.setEnabled(true);
+                    buttonParams.setEnabled(false);
+                    buttonCallOut.setEnabled(false);
+                    buttonTest.setEnabled(false);
+                    button.setEnabled(false);
+                }
+            }
+        });
 
         buttonTest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,24 +155,8 @@ public class MainActivity extends AppCompatActivity {
                         textView.setText("Широта: " + Params.latitude + " Долгота: " +Params.longitude);
                         // Здесь вы можете использовать полученные координаты
                         locationHelper.stopLocationUpdates();
-
                     }
                 });
-/*
-                new Thread(() -> {
-                    try {
-                        String response = HttpClient.sendGetRequest(Params.getAddPointUrl());
-                        runOnUiThread(() -> {
-                            textView.setText("response="+response );
-                            // Обновите UI с полученными данными
-                        });
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }).start();
-
- */
             }
         });
 
